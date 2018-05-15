@@ -46,10 +46,6 @@ namespace Turbo.Plugins.MaBa.Bounties
             BountiesToHighlight.Add(Hud.Sno.SnoQuests.Bounty_TheCursedCellar_369944);
 
             BountiesToPopup.Add(Hud.Sno.SnoQuests.Bounty_TheCursedPeat_375278);
-            /*BountiesToPopup.Add(Hud.Sno.SnoQuests.Bounty_ClearKhazraDen_347065);
-            BountiesToPopup.Add(Hud.Sno.SnoQuests.Bounty_KillTheSkeletonKing_361234);
-            BountiesToPopup.Add(Hud.Sno.SnoQuests.Bounty_KillTheAspectOfSin_357137);
-            BountiesToPopup.Add(Hud.Sno.SnoQuests.Bounty_KillTheSiegebreakerAssaultBeast_349242);*/
 
             BountyNameNormalFont = Hud.Render.CreateFont("tahoma", 7f, 255, 80, 180, 255, true, true, 160, 0, 0, 0, true);
             BountyNameHighlightedFont = Hud.Render.CreateFont("tahoma", 7f, 255, 255, 255, 0, true, true, 160, 0, 0, 0, true);
@@ -59,7 +55,6 @@ namespace Turbo.Plugins.MaBa.Bounties
         {
             
             var mapCurrentAct = Hud.Game.ActMapCurrentAct;
-            //if (mapCurrentAct == BountyAct.None) return;
 
             var w = 220 * Hud.Window.HeightUiRatio;
             var h = 100 * Hud.Window.HeightUiRatio;
@@ -69,14 +64,6 @@ namespace Turbo.Plugins.MaBa.Bounties
                 var quest = Hud.Game.Bounties.FirstOrDefault(x => x.SnoQuest.BountySnoArea == waypoint.TargetSnoArea);
                 if ((quest != null) && quest.State != QuestState.completed)
                 {
-                    if (BountiesToPopup.Contains(quest.SnoQuest))
-                    {
-                        Hud.RunOnPlugin<MaBa.Bounties.BountyPopupPlugin>(plugin =>
-                        {
-                            plugin.Show(quest.SnoQuest.NameLocalized, "Bounty available", 5000, "");
-                        });
-                    }
-
                     if (!Hud.Render.UiHidden && clipState == ClipState.AfterClip && (Hud.Render.WorldMapUiElement.Visible || Hud.Render.ActMapUiElement.Visible))
                     {
                         var x = Hud.Render.WorldMapUiElement.Rectangle.X + waypoint.CoordinateOnMapUiElement.X * Hud.Window.HeightUiRatio;
@@ -90,6 +77,20 @@ namespace Turbo.Plugins.MaBa.Bounties
                 }
             }
 
+            foreach (var waypoint in Hud.Game.ActMapWaypoints.Where(x => x.BountyAct == (BountyAct)400))
+            {
+                var quest = Hud.Game.Bounties.FirstOrDefault(x => x.SnoQuest.BountySnoArea == waypoint.TargetSnoArea);
+                if ((quest != null) && quest.State != QuestState.completed)
+                {
+                    if (BountiesToPopup.Contains(quest.SnoQuest))
+                    {
+                        Hud.RunOnPlugin<MaBa.Bounties.BountyPopupPlugin>(plugin =>
+                        {
+                            plugin.Show(quest.SnoQuest.NameLocalized, "Bounty available", 5000, "");
+                        });
+                    }
+                }
+            }
         }
 
         public IEnumerable<ITransparent> GetTransparents()
